@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-import { ListStore } from '@/store/todoList';
 
 const router = useRouter();
-const route = useRoute();
-
-const store = ListStore();
 
 function createList() {
     router.push('/todo?creating=newList');

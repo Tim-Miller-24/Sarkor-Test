@@ -2,27 +2,19 @@
 import { ListStore } from '@/store/todoList';
 import { Check, Delete, Edit, Close, } from '@element-plus/icons-vue';
 
+let props = defineProps(['docReady'])
+
 const store = ListStore();
-
-const route = useRoute();
-
-const router = useRouter();
 
 const input = ref('');
 
 const editInput = ref('');
 
-const tasksBeforeEditing = ref<string[]>([]);
-
-const complitedTasksBeforeEditing = ref<string[]>([]);
-
 const isEditingTask = ref(false);
 
-const indexOfEditingTask = ref();
-
-const documentReady = ref(false);
-
 const checkedTasks = ref<string[]>([]);
+
+const indexOfEditingTask = ref();
 
 function addTask() {
     if (input.value.trim().length == 0) {
@@ -43,20 +35,7 @@ function editTask(index: number) {
     isEditingTask.value = true;
 }
 
-function removeTask(index: number, task: string | never) {
-    if (checkedTasks.value.includes(task)) {
-        ElMessage({
-            message: 'Нельзя удалить выполененное дело',
-            type: 'warning',
-        })
-        return;
-    }
-
-
-    store.removeTask(index, store.id);
-}
-
-function saveEdit(index: number, text: string) {
+function saveEditTask(index: number, text: string) {
     if (editInput.value.trim().length == 0) {
         ElMessage({
             message: 'Изменённое поле не может быть пустым',
@@ -77,58 +56,23 @@ function canselEditingTask() {
     editInput.value = '';
 }
 
-function saveLists() {
-    if (store.getTodoList(store.id).length == 0) {
+function removeTask(index: number, task: string | never) {
+    if (checkedTasks.value.includes(task)) {
         ElMessage({
-            message: 'Нужно добавить хотя бы 1 заметку',
+            message: 'Нельзя удалить выполененное дело',
             type: 'warning',
         })
         return;
     }
 
-    store.saveAllLists();
-    router.push('/');
-}
 
-function cancelEditingList() {
-    if (route.query.creating) {
-        store.removeList(store.id);
-    }
-
-    if (route.query.editing) {
-        console.log(store.id);
-        store.cancelEditingList(store.id, tasksBeforeEditing.value, complitedTasksBeforeEditing.value);
-        store.id++;
-    }
-
-    router.push('/');
+    store.removeTask(index, store.id);
 }
 
 onMounted(() => {
-
-    if (route.query.creating) {
-        store.createList();
-        console.log(store.id);
-        store.lists[store.id].tasks = store.getTodoList(store.id);
+    if (props.docReady) {
         checkedTasks.value = store.getComplitedTasks(store.id);
-
-        documentReady.value = true;
     }
-
-    if (route.query.editing) {
-        store.lists = store.getAllLists();
-
-        store.id = Number(route.query.editing);
-
-        store.lists[store.id].tasks = store.getTodoList(store.id);
-        checkedTasks.value = store.getComplitedTasks(store.id);
-
-        tasksBeforeEditing.value = store.getTodoList(store.id);
-        complitedTasksBeforeEditing.value = store.getComplitedTasks(store.id);
-
-        documentReady.value = true;
-    }
-
 })
 
 onUpdated(() => {
@@ -136,20 +80,10 @@ onUpdated(() => {
     store.saveList(store.id);
 })
 
-onUnmounted(() => {
-    documentReady.value = false;
-})
 </script>
 
 <template>
-    <el-button @click="saveLists" type="success" :icon="Check" circle />
-    <el-popconfirm title="Are you sure to cancel editing?" @confirm="cancelEditingList">
-        <template #reference>
-            <el-button type="danger" :icon="Close" circle />
-        </template>
-    </el-popconfirm>
-
-    <div class="container" v-if="documentReady">
+    <div class="container" v-if="props.docReady">
         <h3>Список дел</h3>
 
         <ul v-for="(task, index) in store.lists[store.id].tasks" :key="index">
@@ -174,7 +108,7 @@ onUnmounted(() => {
 
 
                 <span v-else-if="isEditingTask && index == indexOfEditingTask">
-                    <el-button @click="saveEdit(index, editInput)" type="success" :icon="Check" circle />
+                    <el-button @click="saveEditTask(index, editInput)" type="success" :icon="Check" circle />
 
                     <el-popconfirm title="Are you sure to cancel editing?" @confirm="canselEditingTask">
                         <template #reference>
