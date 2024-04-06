@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: arial,sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+a, button:hover {
+    cursor: pointer;
+}
+
+button::after, button::before:hover {
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+}
+
+.container {
+    @include container();
+}
+
+.row {
+    @include row();
+}
+
+.d-flex {
+    display: flex;
+}
+
+.d-none {
+    display: none;
+}
+
+.flex-column {
+    flex-direction: column;   
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.align-center {
+    align-items: center;
+}
