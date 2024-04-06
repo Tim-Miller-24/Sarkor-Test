@@ -56,37 +56,3 @@ $column: 12;
         margin-right: -$margin;
     }
 }
-
-@mixin col-base($padding: $gutter-side) {
-    padding-left: $padding;
-    padding-right: $padding;
-}
-
-@mixin col($col-n: $column, $padding: $gutter-side) {
-    width: 100% / $column * $col-n;
-    @include col-base($padding);
-}
-
-@mixin col-lg($col-n: $column, $padding: $gutter-side) {
-    @include media() {
-        @include col($col-n, $padding)
-    }
-}
-
-@mixin col-md($col-n: $column, $padding: $gutter-side) {
-    @include media($md) {
-        @include col($col-n, $padding)
-    }
-}
-
-@mixin col-sm($col-n: $column, $padding: $gutter-side) {
-    @include media($sm) {
-        @include col($col-n, $padding)
-    }
-}
-
-@mixin col-xs($col-n: $column, $padding: $gutter-side) {
-    @include media($xs) {
-        @include col($col-n, $padding)
-    }
-}

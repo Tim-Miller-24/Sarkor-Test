@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ListStore } from '@/store/todoList';
-import { Check, Delete, Edit, Close, } from '@element-plus/icons-vue';
 
 const store = ListStore();
 
@@ -49,7 +48,7 @@ onBeforeUnmount(() => {
 function saveLists() {
     if (store.getTodoList(store.id).length == 0) {
         ElMessage({
-            message: 'Нужно добавить хотя бы 1 заметку',
+            message: 'You must add at least 1 note',
             type: 'warning',
         })
         return;
@@ -75,19 +74,27 @@ function cancelEditingList() {
 </script>
 
 <template>
-    <div class="container" v-if="documentReady">
+    <div class="container list-box" v-if="documentReady">
 
-        <el-button @click="saveLists" type="success" :icon="Check" circle />
-        <el-popconfirm title="Are you sure to cancel editing?" @confirm="cancelEditingList">
-            <template #reference>
-                <el-button type="danger" :icon="Close" circle />
-            </template>
-        </el-popconfirm>
+        <div class="list-content">
+            <div class="list-changes-buttons">
+                <el-button @click="saveLists" type="success" plain>Save</el-button>
+                <el-popconfirm title="Are you sure to cancel editing?" @confirm="cancelEditingList">
+                    <template #reference>
+                        <el-button type="danger" plain>Cancel</el-button>
+                    </template>
+                </el-popconfirm>
 
-        <TodoDetails :docReady="documentReady" />
+            </div>
+    
+            <TodoDetails :docReady="documentReady" />
+
+        </div>
     </div>
 </template>
 
 <style lang="scss">
 @import '@/assets/styles/main';
+
+
 </style>

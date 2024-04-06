@@ -9,12 +9,14 @@ function createList() {
 </script>
 
 <template>
-    <div class="container">
+    <div class="container main">
+        <el-button class="createList-btn" @click="createList" type="primary" plain>Create ToDo List</el-button>
+        
         <TodoList />
-        <button @click="createList">create todo list</button>
     </div>
 </template>
 
 <style lang="scss">
 @import '@/assets/styles/main';
+
 </style>
