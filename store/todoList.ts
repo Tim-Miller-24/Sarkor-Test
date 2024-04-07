@@ -38,7 +38,7 @@ export const ListStore = defineStore('todoList', {
         },
         saveAllLists() {
             localStorage.setItem('allLists', JSON.stringify(this.lists))
-            this.id++;
+            
         },
         removeList(id: number) {
             this.lists = this.getAllLists();
@@ -65,8 +65,10 @@ export const ListStore = defineStore('todoList', {
 
                     localStorage.setItem(`todoList${list.id}`, JSON.stringify(this.lists[list.id].tasks));
                     localStorage.setItem(`comlitedTasks${list.id}`, JSON.stringify(this.lists[list.id].complitedTasks));
-                }
+                } 
             }
+            
+            this.id--;
             localStorage.setItem('allLists', JSON.stringify(this.lists));
 
             if (this.lists.length == 0) {

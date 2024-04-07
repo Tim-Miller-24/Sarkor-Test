@@ -27,7 +27,6 @@ function deleteList(id: number) {
     store.removeList(id);
 
     taskList.value = store.getAllLists();
-
 }
 </script>
 
