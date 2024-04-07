@@ -94,7 +94,7 @@ export const ListStore = defineStore('todoList', {
 
             return this.getItem(tempComplitedTasks)
         },
-        getItem(temp) {
+        getItem(temp: string | null) {
             if (temp !== null) {
                 return JSON.parse(temp);
             }
