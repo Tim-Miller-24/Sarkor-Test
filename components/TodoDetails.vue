@@ -2,7 +2,7 @@
 import { ListStore } from '@/store/todoList';
 import { Check, Delete, Edit, Close, } from '@element-plus/icons-vue';
 
-let props = defineProps(['docReady'])
+let props = defineProps(['docReady', 'listId'])
 
 const store = ListStore();
 
@@ -26,7 +26,7 @@ function addTask() {
         return;
     }
 
-    store.addTask(input.value.trim(), store.id);
+    store.addTask(input.value.trim(), props.listId);
     input.value = '';
 }
 
@@ -46,7 +46,7 @@ function saveEditTask(index: number, text: string) {
         return;
     }
 
-    store.editTask(index, text.trim(), store.id);
+    store.editTask(index, text.trim(), props.listId);
     editInput.value = '';
     isEditingTask.value = false;
 }
@@ -66,18 +66,18 @@ function removeTask(index: number, task: string | never) {
     }
 
 
-    store.removeTask(index, store.id);
+    store.removeTask(index, props.listId);
 }
 
 onMounted(() => {
     if (props.docReady) {
-        checkedTasks.value = store.getComplitedTasks(store.id);
+        checkedTasks.value = store.getComplitedTasks(props.listId);
     }
 })
 
 onUpdated(() => {
-    store.lists[store.id].complitedTasks = checkedTasks.value;
-    store.saveList(store.id);
+    store.lists[props.listId].complitedTasks = checkedTasks.value;
+    store.saveList(props.listId);
 })
 
 </script>
@@ -87,7 +87,7 @@ onUpdated(() => {
         <h3 style="margin-bottom: 0.5rem;">Note</h3>
 
         <ul class="tasks-menu">
-            <li class="task-list" v-for="(task, index) in store.lists[store.id].tasks" :key="index">
+            <li class="task-list" v-for="(task, index) in store.lists[props.listId].tasks" :key="index">
                 <input class="checkBox" type="checkbox" :id="task" v-model="checkedTasks" :value="task">
 
                 <label :for="task" class="task-text" v-if="!isEditingTask"> {{ task }} </label>

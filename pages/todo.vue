@@ -9,6 +9,8 @@ const route = useRoute();
 
 const tasksBeforeEditing = ref<string[]>([]);
 
+const currentListId = ref(0);
+
 const complitedTasksBeforeEditing = ref<string[]>([]);
 
 const checkedTasks = ref<string[]>([]);
@@ -18,7 +20,9 @@ const documentReady = ref(false);
 onMounted(() => {
     if (route.query.creating) {
         store.createList();
-        console.log(store.id);
+        
+        currentListId.value = store.id;
+
         store.lists[store.id].tasks = store.getTodoList(store.id);
         checkedTasks.value = store.getComplitedTasks(store.id);
 
@@ -27,14 +31,14 @@ onMounted(() => {
 
     if (route.query.editing) {
         store.lists = store.getAllLists();
+        
+        currentListId.value = Number(route.query.editing);
 
-        store.id = Number(route.query.editing);
+        store.lists[currentListId.value].tasks = store.getTodoList(currentListId.value);
+        checkedTasks.value = store.getComplitedTasks(currentListId.value);
 
-        store.lists[store.id].tasks = store.getTodoList(store.id);
-        checkedTasks.value = store.getComplitedTasks(store.id);
-
-        tasksBeforeEditing.value = store.getTodoList(store.id);
-        complitedTasksBeforeEditing.value = store.lists[store.id].complitedTasks;
+        tasksBeforeEditing.value = store.getTodoList(currentListId.value);
+        complitedTasksBeforeEditing.value = store.lists[currentListId.value].complitedTasks;
 
         documentReady.value = true;
     }
@@ -46,7 +50,7 @@ onBeforeUnmount(() => {
 })
 
 function saveLists() {
-    if (store.getTodoList(store.id).length == 0) {
+    if (store.getTodoList(currentListId.value).length == 0) {
         ElMessage({
             message: 'You must add at least 1 note',
             type: 'warning',
@@ -54,19 +58,27 @@ function saveLists() {
         return;
     }
 
-    store.saveAllLists();
+    if (route.query.creating) {
+        store.saveAllLists();
+        store.id++;
+    }
+
+    if (route.query.editing) {
+        store.saveAllLists();
+    }
+
     router.push('/');
 }
 
 function cancelEditingList() {
     if (route.query.creating) {
-        store.removeList(store.id);
+        store.removeList(currentListId.value);
     }
 
     if (route.query.editing) {
-        console.log(store.id);
-        store.cancelEditingList(store.id, tasksBeforeEditing.value, complitedTasksBeforeEditing.value);
-        store.id++;
+        currentListId.value = Number(route.query.editing);
+
+        store.cancelEditingList(currentListId.value, tasksBeforeEditing.value, complitedTasksBeforeEditing.value);
     }
 
     router.push('/');
@@ -87,7 +99,7 @@ function cancelEditingList() {
 
             </div>
     
-            <TodoDetails :docReady="documentReady" />
+            <TodoDetails :docReady="documentReady" :listId="currentListId" />
 
         </div>
     </div>
