@@ -80,30 +80,23 @@ export const ListStore = defineStore('todoList', {
             localStorage.setItem(`comlitedTasks${id}`, JSON.stringify(comlitedTasks));
         },
         getAllLists() {
-            let temp = localStorage.getItem(`allLists`);
+            let tempAllList = localStorage.getItem(`allLists`);
 
-            if (temp !== null) {
-                return JSON.parse(temp);
-            }
-            else {
-                return [];
-            }
+            return this.getItem(tempAllList);
         },
         getTodoList(id: number) {
             let tempList = localStorage.getItem(`todoList${id}`);
 
-            if (tempList !== null) {
-                return JSON.parse(tempList);
-            }
-            else {
-                return [];
-            }
+            return this.getItem(tempList);
         },
         getComplitedTasks(id: number) {
-            let tempTasks = localStorage.getItem(`comlitedTasks${id}`);
+            let tempComplitedTasks = localStorage.getItem(`comlitedTasks${id}`);
 
-            if (tempTasks !== null) {
-                return JSON.parse(tempTasks);
+            return this.getItem(tempComplitedTasks)
+        },
+        getItem(temp) {
+            if (temp !== null) {
+                return JSON.parse(temp);
             }
             else {
                 return [];
